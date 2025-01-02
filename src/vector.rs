@@ -9,7 +9,16 @@ impl<K, const N: usize> From<[K; N]> for Vector<K, N> {
     }
 }
 
-impl<K: std::cmp::PartialEq, const N: usize> Vector<K, N> {
+impl<
+        K: Copy
+            + From<f32>
+            + std::cmp::PartialOrd
+            + std::ops::Sub<Output = K>
+            + num::Signed
+            + std::cmp::PartialEq,
+        const N: usize,
+    > Vector<K, N>
+{
     pub fn size(&self) -> usize {
         self.data.len()
     }
@@ -19,7 +28,10 @@ impl<K: std::cmp::PartialEq, const N: usize> Vector<K, N> {
     }
 
     pub fn equals(&self, v: &Vector<K, N>) -> bool {
-        self.data.iter().zip(v.data.iter()).all(|(a, b)| a == b)
+        self.data
+            .iter()
+            .zip(v.data.iter())
+            .all(|(a, b)| (*a - *b).abs() < K::from(1e-6))
     }
 }
 
@@ -36,7 +48,10 @@ impl<K: std::fmt::Debug, const N: usize> std::fmt::Display for Vector<K, N> {
 impl<
         K: Copy
             + Default
+            + From<f32>
+            + std::cmp::PartialOrd
             + std::cmp::PartialEq
+            + num::Signed
             + num_traits::ops::mul_add::MulAdd<f32, K, Output = K>
             + std::ops::Add<Output = K>
             + std::ops::Sub<Output = K>
@@ -57,6 +72,9 @@ impl<
 impl<
         K: Copy
             + Default
+            + From<f32>
+            + std::cmp::PartialOrd
+            + num::Signed
             + std::cmp::PartialEq
             + std::ops::Add<Output = K>
             + std::ops::Sub<Output = K>
@@ -74,6 +92,9 @@ impl<
 impl<
         K: Copy
             + Default
+            + From<f32>
+            + std::cmp::PartialOrd
+            + num::Signed
             + std::cmp::PartialEq
             + std::ops::Add<Output = K>
             + std::ops::Sub<Output = K>

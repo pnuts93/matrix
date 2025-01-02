@@ -5,6 +5,9 @@ impl<
             + std::ops::Sub<Output = K>
             + std::ops::Mul<Output = K>
             + std::cmp::PartialEq
+            + From<f32>
+            + std::cmp::PartialOrd
+            + num::Signed
             + Copy
             + Default,
         const N: usize,
@@ -44,7 +47,10 @@ impl<
             + std::ops::Mul<Output = K>
             + std::cmp::PartialEq
             + Copy
-            + Default,
+            + Default
+            + num::Signed
+            + std::cmp::PartialOrd
+            + From<f32>,
         const N: usize,
         const M: usize,
     > Matrix<K, N, M>

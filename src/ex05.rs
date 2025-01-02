@@ -5,6 +5,9 @@ pub fn angle_cos<
         + Default
         + Modulus
         + PartialEq
+        + From<f32>
+        + std::cmp::PartialOrd
+        + num::Signed
         + std::ops::Add<Output = K>
         + std::ops::Mul<Output = K>
         + std::ops::Div<Output = K>

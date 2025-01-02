@@ -9,7 +9,17 @@ impl<K, const N: usize, const M: usize> From<[[K; N]; M]> for Matrix<K, N, M> {
     }
 }
 
-impl<K: std::cmp::PartialEq, const N: usize, const M: usize> Matrix<K, N, M> {
+impl<
+        K: Copy
+            + std::cmp::PartialEq
+            + std::ops::Sub<Output = K>
+            + num::Signed
+            + std::cmp::PartialOrd
+            + From<f32>,
+        const N: usize,
+        const M: usize,
+    > Matrix<K, N, M>
+{
     pub fn shape(&self) -> [usize; 2] {
         [self.data.len(), self.data[0].len()]
     }
@@ -22,10 +32,11 @@ impl<K: std::cmp::PartialEq, const N: usize, const M: usize> Matrix<K, N, M> {
     }
 
     pub fn equals(&self, v: &Matrix<K, N, M>) -> bool {
-        self.data
-            .iter()
-            .zip(v.data.iter())
-            .all(|(a, b)| a.iter().zip(b.iter()).all(|(ax, by)| ax == by))
+        self.data.iter().zip(v.data.iter()).all(|(a, b)| {
+            a.iter()
+                .zip(b.iter())
+                .all(|(ax, by)| (*ax - *by).abs() < K::from(1e-6))
+        })
     }
 }
 
@@ -47,7 +58,14 @@ impl<K: std::fmt::Debug, const N: usize, const M: usize> std::fmt::Display for M
 }
 
 impl<
-        K: Copy + Default + std::cmp::PartialEq + num_traits::ops::mul_add::MulAdd<f32, K, Output = K>,
+        K: Copy
+            + Default
+            + std::cmp::PartialEq
+            + num_traits::ops::mul_add::MulAdd<f32, K, Output = K>
+            + std::ops::Sub<Output = K>
+            + num::Signed
+            + std::cmp::PartialOrd
+            + From<f32>,
         const N: usize,
         const M: usize,
     > num_traits::ops::mul_add::MulAdd<f32, Self> for Matrix<K, N, M>
@@ -67,6 +85,9 @@ impl<
 impl<
         K: Copy
             + Default
+            + num::Signed
+            + std::cmp::PartialOrd
+            + From<f32>
             + std::cmp::PartialEq
             + std::ops::Add<Output = K>
             + std::ops::Sub<Output = K>
@@ -85,6 +106,9 @@ impl<
 impl<
         K: Copy
             + Default
+            + num::Signed
+            + std::cmp::PartialOrd
+            + From<f32>
             + std::cmp::PartialEq
             + std::ops::Add<Output = K>
             + std::ops::Sub<Output = K>

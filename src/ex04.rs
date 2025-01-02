@@ -4,7 +4,15 @@ use num_traits::Pow;
 use crate::vector::Vector;
 
 impl<
-        K: Copy + Default + PartialEq + std::ops::Mul<Output = K> + std::ops::Add<Output = K> + Modulus,
+        K: Copy
+            + Default
+            + From<f32>
+            + std::cmp::PartialOrd
+            + num::Signed
+            + PartialEq
+            + std::ops::Mul<Output = K>
+            + std::ops::Add<Output = K>
+            + Modulus,
         const N: usize,
     > Vector<K, N>
 {
@@ -34,7 +42,7 @@ impl Modulus for f32 {
     fn modulus(&self) -> f32 {
         let res = *self;
         if res < 0. {
-            return -res
+            return -res;
         }
         res
     }
@@ -44,7 +52,7 @@ impl Modulus for f64 {
     fn modulus(&self) -> f32 {
         let res = *self as f32;
         if res < 0. {
-            return -res
+            return -res;
         }
         res
     }

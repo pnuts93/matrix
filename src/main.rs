@@ -15,6 +15,7 @@ fn main() {
     exercise_map.push(("EX07: Linear map, Matrix multiplication".to_string(), ex07));
     exercise_map.push(("EX08: Trace".to_string(), ex08));
     exercise_map.push(("EX09: Transpose".to_string(), ex09));
+    exercise_map.push(("EX10: Row-echelon form".to_string(), ex10));
 
     for (key, function) in exercise_map.into_iter() {
         println!("\n\n\n##### {:?} #####\n", key);
@@ -167,4 +168,19 @@ fn ex09() {
     println!("{}", u.transpose());
     let u = Matrix::from([[-2., -8., 4.], [1., -23., 4.]]);
     println!("{}", u.transpose());
+}
+
+fn ex10() {
+    let u = Matrix::from([[1., 0., 0.], [0., 1., 0.], [0., 0., 1.]]);
+    println!("{}", u.row_echelon());
+    let u = Matrix::from([[1., 2.], [3., 4.]]);
+    println!("{}", u.row_echelon());
+    let u = Matrix::from([[1., 2.], [2., 4.]]);
+    println!("{}", u.row_echelon());
+    let u = Matrix::from([
+        [8., 5., -2., 4., 28.],
+        [4., 2.5, 20., 4., -4.],
+        [8., 5., 1., 4., 17.],
+    ]);
+    println!("{}", u.row_echelon());
 }

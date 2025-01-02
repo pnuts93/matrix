@@ -3,7 +3,15 @@ use num_traits::MulAdd;
 use crate::vector::Vector;
 
 impl<
-        K: Copy + Default + PartialEq + std::ops::Mul<Output = K> + std::ops::Add<Output = K> + MulAdd<Output = K>,
+        K: Copy
+            + Default
+            + From<f32>
+            + std::cmp::PartialOrd
+            + num::Signed
+            + PartialEq
+            + std::ops::Mul<Output = K>
+            + std::ops::Add<Output = K>
+            + MulAdd<Output = K>,
         const N: usize,
     > Vector<K, N>
 {
