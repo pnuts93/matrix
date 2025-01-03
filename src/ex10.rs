@@ -19,7 +19,7 @@ impl<
         let mut offset_n: usize = 0;
         let mut offset_m: usize = 0;
         while offset_m < M && offset_n < N {
-            match switch_rows(&mut data, &mut offset_n, &mut offset_m) {
+            match switch_rows(&mut data, &mut offset_n, &mut offset_m, &mut 0) {
                 Ok(_) => {
                     normalize_row(&mut data, offset_n, offset_m);
                     remove_first_entries(&mut data, offset_n, offset_m);
@@ -41,6 +41,23 @@ impl<
         }
         Matrix { data }
     }
+
+    pub fn row_echelon_count(&self, switch_counter: &mut usize) -> Matrix<K, N, M> {
+        let mut data = self.data.clone();
+        let mut offset_n: usize = 0;
+        let mut offset_m: usize = 0;
+        while offset_m < M && offset_n < N {
+            match switch_rows(&mut data, &mut offset_n, &mut offset_m, switch_counter) {
+                Ok(_) => {
+                    remove_first_entries(&mut data, offset_n, offset_m);
+                    offset_m += 1;
+                    offset_n += 1;
+                }
+                Err(_) => continue,
+            };
+        }
+        Matrix { data }
+    }
 }
 
 fn switch_rows<
@@ -51,10 +68,12 @@ fn switch_rows<
     data: &mut [[K; N]; M],
     offset_n: &mut usize,
     offset_m: &mut usize,
+    switch_counter: &mut usize,
 ) -> Result<(), ZeroedColumnError> {
     let max_row = find_max_row(data, offset_n, offset_m)?;
     if max_row != *offset_m {
         data.swap(*offset_m, max_row);
+        *switch_counter += 1;
     }
     Ok(())
 }
@@ -109,6 +128,7 @@ fn remove_first_entries<
         + std::cmp::PartialOrd
         + From<f32>
         + std::ops::Mul<Output = K>
+        + std::ops::Div<Output = K>
         + std::ops::SubAssign,
     const N: usize,
     const M: usize,
@@ -121,7 +141,8 @@ fn remove_first_entries<
         if data[i][offset_n] == K::from(0.) {
             continue;
         }
-        let row = data[offset_m].map(|x| x * data[i][offset_n]);
+        let factor = data[offset_m][offset_n];
+        let row = data[offset_m].map(|x| x * (data[i][offset_n] / factor));
         for j in offset_n..N {
             data[i][j] -= row[j];
         }
