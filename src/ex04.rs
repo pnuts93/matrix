@@ -13,8 +13,7 @@ impl<
             + std::ops::Mul<Output = K>
             + std::ops::Add<Output = K>
             + Modulus,
-        const N: usize,
-    > Vector<K, N>
+    > Vector<K>
 {
     pub fn norm_1(&self) -> f32 {
         self.data.iter().map(|x| x.modulus()).sum()

@@ -2,11 +2,11 @@ use num::{complex::ComplexFloat, Complex};
 
 use crate::matrix::Matrix;
 
-impl<K: Copy + Default + std::ops::AddAssign + Conjugate, const N: usize, const M: usize> Matrix<K, N, M> {
-    pub fn transpose(&self) -> Matrix<K, M, N> {
-        let mut data = [[K::default(); M]; N];
-        for i in 0..N {
-            for j in 0..M {
+impl<K: Copy + Default + std::ops::AddAssign + Conjugate> Matrix<K> {
+    pub fn transpose(&self) -> Matrix<K> {
+        let mut data = vec![vec![K::default(); self.shape()[1]]; self.shape()[0]];
+        for i in 0..self.shape()[0] {
+            for j in 0..self.shape()[1] {
                 data[i][j] = self.data[j][i].conjugate();
             }
         }

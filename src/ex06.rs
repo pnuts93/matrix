@@ -2,16 +2,15 @@ use crate::vector::Vector;
 
 pub fn cross_product<
     K: Copy + Default + std::ops::Mul<Output = K> + std::ops::Sub<Output = K>,
-    const N: usize,
 >(
-    u: &Vector<K, N>,
-    v: &Vector<K, N>,
-) -> Vector<K, N> {
-    let mut data = [K::default(); N];
+    u: &Vector<K>,
+    v: &Vector<K>,
+) -> Vector<K> {
+    let mut data = [K::default(); 3];
     data[0] = u.data[1] * v.data[2] - u.data[2] * v.data[1];
     data[1] = u.data[2] * v.data[0] - u.data[0] * v.data[2];
     data[2] = u.data[0] * v.data[1] - u.data[1] * v.data[0];
-    Vector { data }
+    Vector::from(data)
 }
 
 #[cfg(test)]

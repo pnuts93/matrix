@@ -10,31 +10,30 @@ impl<
             + num::Signed
             + Copy
             + Default,
-        const N: usize,
-    > Vector<K, N>
+    > Vector<K>
 {
-    pub fn _add(&self, v: &Vector<K, N>) -> Self {
+    pub fn _add(&self, v: &Vector<K>) -> Self {
         if !self.is_same_size(v) {
             panic!()
         }
-        let mut res = Vector::from([K::default(); N]);
+        let mut res = Vector::from(vec![K::default(); self.size()]);
         for i in 0..self.size() {
             res.data[i] = self.data[i] + v.data[i];
         }
         res
     }
-    pub fn _sub(&self, v: &Vector<K, N>) -> Self {
+    pub fn _sub(&self, v: &Vector<K>) -> Self {
         if !self.is_same_size(v) {
             panic!()
         }
-        let mut res = Vector::from([K::default(); N]);
+        let mut res = Vector::from(vec![K::default(); self.size()]);
         for i in 0..self.size() {
             res.data[i] = self.data[i] - v.data[i];
         }
         res
     }
     pub fn _scl(&self, a: K) -> Self {
-        let mut res = Vector::from([K::default(); N]);
+        let mut res = Vector::from(vec![K::default(); self.size()]);
         for i in 0..self.size() {
             res.data[i] = self.data[i] * a;
         }
@@ -51,15 +50,13 @@ impl<
             + num::Signed
             + std::cmp::PartialOrd
             + From<f32>,
-        const N: usize,
-        const M: usize,
-    > Matrix<K, N, M>
+    > Matrix<K>
 {
-    pub fn _add(&self, m: &Matrix<K, N, M>) -> Self {
+    pub fn _add(&self, m: &Matrix<K>) -> Self {
         if !self.is_same_shape(m) {
             panic!()
         }
-        let mut res = Matrix::from([[K::default(); N]; M]);
+        let mut res = Matrix::from(vec![vec![K::default(); self.shape()[0]]; self.shape()[1]]);
         for i in 0..self.shape()[0] {
             for j in 0..self.shape()[1] {
                 res.data[i][j] = self.data[i][j] + m.data[i][j];
@@ -67,11 +64,11 @@ impl<
         }
         res
     }
-    pub fn _sub(&self, m: &Matrix<K, N, M>) -> Self {
+    pub fn _sub(&self, m: &Matrix<K>) -> Self {
         if !self.is_same_shape(m) {
             panic!()
         }
-        let mut res = Matrix::from([[K::default(); N]; M]);
+        let mut res = Matrix::from(vec![vec![K::default(); self.shape()[0]]; self.shape()[1]]);
         for i in 0..self.shape()[0] {
             for j in 0..self.shape()[1] {
                 res.data[i][j] = self.data[i][j] - m.data[i][j];
@@ -80,7 +77,7 @@ impl<
         res
     }
     pub fn _scl(&self, a: K) -> Self {
-        let mut res = Matrix::from([[K::default(); N]; M]);
+        let mut res = Matrix::from(vec![vec![K::default(); self.shape()[0]]; self.shape()[1]]);
         for i in 0..self.shape()[0] {
             for j in 0..self.shape()[1] {
                 res.data[i][j] = self.data[i][j] * a;

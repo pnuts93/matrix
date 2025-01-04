@@ -1,6 +1,6 @@
 use num_traits::MulAdd;
 
-pub fn lerp<V: MulAdd<f32, V, Output = V> + std::ops::Sub<Output = V> + Copy + std::ops::Mul<f32, Output = V>>(
+pub fn lerp<V: MulAdd<f32, V, Output = V> + std::ops::Sub<Output = V> + Clone + std::ops::Mul<f32, Output = V>>(
     u: V,
     v: V,
     t: f32,

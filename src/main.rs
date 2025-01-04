@@ -17,6 +17,7 @@ fn main() {
     exercise_map.push(("EX09: Transpose".to_string(), ex09));
     exercise_map.push(("EX10: Row-echelon form".to_string(), ex10));
     exercise_map.push(("EX11: Determinant".to_string(), ex11));
+    exercise_map.push(("EX12: Inverse".to_string(), ex12));
 
     for (key, function) in exercise_map.into_iter() {
         println!("\n\n\n##### {:?} #####\n", key);
@@ -203,4 +204,22 @@ fn ex11() {
         [28., -4., 17., 1.],
     ]);
     println!("{}", u.determinant());
+}
+
+fn ex12() {
+    let u = Matrix::from([[1., 0., 0.], [0., 1., 0.], [0., 0., 1.]]);
+    println!("{}", u.inverse());
+    // [1.0, 0.0, 0.0]
+    // [0.0, 1.0, 0.0]
+    // [0.0, 0.0, 1.0]
+    let u = Matrix::from([[2., 0., 0.], [0., 2., 0.], [0., 0., 2.]]);
+    println!("{}", u.inverse());
+    // [0.5, 0.0, 0.0]
+    // [0.0, 0.5, 0.0]
+    // [0.0, 0.0, 0.5]
+    let u = Matrix::from([[8., 5., -2.], [4., 7., 20.], [7., 6., 1.]]);
+    println!("{}", u.inverse());
+    // [0.649425287, 0.097701149, -0.655172414]
+    // [-0.781609195, -0.126436782, 0.965517241]
+    // [0.143678161, 0.074712644, -0.206896552]
 }

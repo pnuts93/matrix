@@ -6,24 +6,25 @@ impl<
             + std::ops::Mul<Output = K>
             + std::ops::AddAssign
             + num_traits::MulAdd<Output = K>,
-        const N: usize,
-        const M: usize,
-    > Matrix<K, N, M>
+    > Matrix<K>
 {
-    pub fn mul_vec(&self, vec: &Vector<K, N>) -> Vector<K, N> {
-        let mut data = [K::default(); N];
-        for i in 0..N {
-            for j in 0..M {
+    pub fn mul_vec(&self, vec: &Vector<K>) -> Vector<K> {
+        let mut data = vec![K::default(); vec.size()];
+        for i in 0..self.shape()[0] {
+            for j in 0..self.shape()[1] {
                 data[i] = vec.data[j].mul_add(self.data[i][j], data[i]);
             }
         }
         Vector { data }
     }
-    pub fn mul_mat<const P: usize>(&self, mat: &Matrix<K, P, M>) -> Matrix<K, P, M> {
-        let mut data = [[K::default(); P]; M];
-        for i in 0..M {
-            for j in 0..P {
-                for k in 0..N {
+    pub fn mul_mat(&self, mat: &Matrix<K>) -> Matrix<K> {
+        let n = self.shape()[0];
+        let m = self.shape()[1];
+        let p = mat.shape()[0];
+        let mut data = vec![vec![K::default(); p]; m];
+        for i in 0..m {
+            for j in 0..p {
+                for k in 0..n {
                     data[i][j] = mat.data[k][j].mul_add(self.data[i][k], data[i][j]);
                 }
             }

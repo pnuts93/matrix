@@ -1,12 +1,12 @@
 use crate::vector::Vector;
 use num_traits::MulAdd;
 
-pub fn linear_combination<K: std::marker::Copy + Default + MulAdd<Output = K> + std::fmt::Display, const N: usize>(
-    u: &[&Vector<K, N>],
+pub fn linear_combination<K: std::marker::Copy + Default + MulAdd<Output = K> + std::fmt::Display>(
+    u: &[&Vector<K>],
     coefs: &[K],
-) -> Vector<K, N> {
-    let mut res = [K::default(); N];
-    for i in 0..N {
+) -> Vector<K> {
+    let mut res = vec![K::default(); u[0].size()];
+    for i in 0..u[0].size() {
         for j in 0..u.len() {
             res[i] = u[j].data[i].mul_add(coefs[j], res[i]);
         }

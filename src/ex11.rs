@@ -11,15 +11,13 @@ impl<
             + std::ops::Mul<Output = K>
             + std::ops::SubAssign
             + std::ops::MulAssign,
-        const N: usize,
-        const M: usize,
-    > Matrix<K, N, M>
+    > Matrix<K>
 {
     pub fn determinant(&self) -> K {
         let mut switch_counter = 0;
         let row_echelon_form = self.row_echelon_count(&mut switch_counter);
         let mut determinant = K::from(1.);
-        for i in 0..N {
+        for i in 0..self.shape()[0] {
             if row_echelon_form.data[i][i] == K::default() {
                 return K::default();
             }

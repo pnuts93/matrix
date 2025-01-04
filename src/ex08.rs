@@ -1,9 +1,9 @@
 use crate::matrix::Matrix;
 
-impl<K: Copy + Default + std::ops::AddAssign, const N: usize> Matrix<K, N, N> {
+impl<K: Copy + Default + std::ops::AddAssign> Matrix<K> {
     pub fn trace(&self) -> K {
         let mut res = K::default();
-        for i in 0..N {
+        for i in 0..self.shape()[0] {
             res += self.data[i][i];
         }
         res

@@ -1,11 +1,29 @@
-#[derive(Clone, Copy)]
-pub struct Vector<K, const N: usize> {
-    pub data: [K; N],
+#[derive(Clone)]
+pub struct Vector<K> {
+    pub data: Vec<K>,
 }
 
-impl<K, const N: usize> From<[K; N]> for Vector<K, N> {
+impl<K: Clone, const N: usize> From<[K; N]> for Vector<K> {
     fn from(value: [K; N]) -> Self {
+        Vector {
+            data: value.to_vec(),
+        }
+    }
+}
+
+impl<K: Clone> From<Vec<K>> for Vector<K> {
+    fn from(value: Vec<K>) -> Self {
         Vector { data: value }
+    }
+}
+
+impl<K> Vector<K> {
+    pub fn size(&self) -> usize {
+        self.data.len()
+    }
+
+    pub fn is_same_size(&self, v: &Vector<K>) -> bool {
+        self.size() == v.size()
     }
 }
 
@@ -16,18 +34,9 @@ impl<
             + std::ops::Sub<Output = K>
             + num::Signed
             + std::cmp::PartialEq,
-        const N: usize,
-    > Vector<K, N>
+    > Vector<K>
 {
-    pub fn size(&self) -> usize {
-        self.data.len()
-    }
-
-    pub fn is_same_size(&self, v: &Vector<K, N>) -> bool {
-        self.size() == v.size()
-    }
-
-    pub fn equals(&self, v: &Vector<K, N>) -> bool {
+    pub fn equals(&self, v: &Vector<K>) -> bool {
         self.data
             .iter()
             .zip(v.data.iter())
@@ -35,7 +44,7 @@ impl<
     }
 }
 
-impl<K: std::fmt::Debug, const N: usize> std::fmt::Display for Vector<K, N> {
+impl<K: std::fmt::Debug> std::fmt::Display for Vector<K> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let mut res = String::from("");
         for i in &self.data {
@@ -56,12 +65,11 @@ impl<
             + std::ops::Add<Output = K>
             + std::ops::Sub<Output = K>
             + std::ops::Mul<Output = K>,
-        const N: usize,
-    > num_traits::ops::mul_add::MulAdd<f32, Self> for Vector<K, N>
+    > num_traits::ops::mul_add::MulAdd<f32, Self> for Vector<K>
 {
     type Output = Self;
     fn mul_add(self, a: f32, b: Self) -> Self::Output {
-        let mut res = Vector::from([K::default(); N]);
+        let mut res = Vector::from(vec![K::default(); self.size()]);
         for i in 0..self.size() {
             res.data[i] = self.data[i].mul_add(a, b.data[i]);
         }
@@ -79,8 +87,7 @@ impl<
             + std::ops::Add<Output = K>
             + std::ops::Sub<Output = K>
             + std::ops::Mul<Output = K>,
-        const N: usize,
-    > std::ops::Sub for Vector<K, N>
+    > std::ops::Sub for Vector<K>
 {
     fn sub(self, rhs: Self) -> Self::Output {
         self._sub(&rhs)
@@ -99,8 +106,7 @@ impl<
             + std::ops::Add<Output = K>
             + std::ops::Sub<Output = K>
             + std::ops::Mul<Output = K>,
-        const N: usize,
-    > std::ops::Mul<K> for Vector<K, N>
+    > std::ops::Mul<K> for Vector<K>
 {
     fn mul(self, rhs: K) -> Self::Output {
         self._scl(rhs)

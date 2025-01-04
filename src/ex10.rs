@@ -10,15 +10,13 @@ impl<
             + std::ops::Div<Output = K>
             + std::ops::Mul<Output = K>
             + std::ops::SubAssign,
-        const N: usize,
-        const M: usize,
-    > Matrix<K, N, M>
+    > Matrix<K>
 {
-    pub fn row_echelon(&self) -> Matrix<K, N, M> {
+    pub fn row_echelon(&self) -> Matrix<K> {
         let mut data = self.data.clone();
         let mut offset_n: usize = 0;
         let mut offset_m: usize = 0;
-        while offset_m < M && offset_n < N {
+        while offset_m < self.shape()[1] && offset_n < self.shape()[0] {
             match switch_rows(&mut data, &mut offset_n, &mut offset_m, &mut 0) {
                 Ok(_) => {
                     normalize_row(&mut data, offset_n, offset_m);
@@ -29,8 +27,8 @@ impl<
                 Err(_) => continue,
             };
         }
-        offset_m = M - 1;
-        offset_n = N - 1;
+        offset_m = self.shape()[1] - 1;
+        offset_n = self.shape()[0] - 1;
         while offset_m > 0 && offset_n > 0 {
             find_next_pivot(&mut data, &mut offset_n, &mut offset_m);
             remove_last_entries(&mut data, offset_n, offset_m);
@@ -42,11 +40,11 @@ impl<
         Matrix { data }
     }
 
-    pub fn row_echelon_count(&self, switch_counter: &mut usize) -> Matrix<K, N, M> {
+    pub fn row_echelon_count(&self, switch_counter: &mut usize) -> Matrix<K> {
         let mut data = self.data.clone();
         let mut offset_n: usize = 0;
         let mut offset_m: usize = 0;
-        while offset_m < M && offset_n < N {
+        while offset_m < self.shape()[1] && offset_n < self.shape()[0] {
             match switch_rows(&mut data, &mut offset_n, &mut offset_m, switch_counter) {
                 Ok(_) => {
                     remove_first_entries(&mut data, offset_n, offset_m);
@@ -61,11 +59,9 @@ impl<
 }
 
 fn switch_rows<
-    K: Copy + Default + From<f32> + std::cmp::PartialOrd + num::Signed,
-    const N: usize,
-    const M: usize,
+    K: Copy + Default + From<f32> + std::cmp::PartialOrd + num::Signed
 >(
-    data: &mut [[K; N]; M],
+    data: &mut Vec<Vec<K>>,
     offset_n: &mut usize,
     offset_m: &mut usize,
     switch_counter: &mut usize,
@@ -80,15 +76,13 @@ fn switch_rows<
 
 fn find_max_row<
     K: Copy + Default + From<f32> + std::cmp::PartialOrd + num::Signed,
-    const N: usize,
-    const M: usize,
 >(
-    data: &[[K; N]; M],
+    data: &mut Vec<Vec<K>>,
     offset_n: &mut usize,
     offset_m: &mut usize,
 ) -> Result<usize, ZeroedColumnError> {
     let mut max_row = *offset_m;
-    for i in *offset_m..M {
+    for i in *offset_m..data.len() {
         if data[i][*offset_n].abs() > data[max_row][*offset_n].abs() {
             max_row = i;
         }
@@ -107,16 +101,14 @@ fn normalize_row<
         + From<f32>
         + std::ops::Div<Output = K>
         + std::ops::Mul<Output = K>,
-    const N: usize,
-    const M: usize,
 >(
-    data: &mut [[K; N]; M],
+    data: &mut Vec<Vec<K>>,
     offset_n: usize,
     offset_m: usize,
 ) {
     if data[offset_m][offset_n] != K::from(1.) {
         let factor = K::from(1.) / data[offset_m][offset_n];
-        for i in offset_n..N {
+        for i in offset_n..data[0].len() {
             data[offset_m][i] = data[offset_m][i] * factor;
         }
     }
@@ -130,20 +122,18 @@ fn remove_first_entries<
         + std::ops::Mul<Output = K>
         + std::ops::Div<Output = K>
         + std::ops::SubAssign,
-    const N: usize,
-    const M: usize,
 >(
-    data: &mut [[K; N]; M],
+    data: &mut Vec<Vec<K>>,
     offset_n: usize,
     offset_m: usize,
 ) {
-    for i in offset_m + 1..M {
+    for i in offset_m + 1..data.len() {
         if data[i][offset_n] == K::from(0.) {
             continue;
         }
         let factor = data[offset_m][offset_n];
-        let row = data[offset_m].map(|x| x * (data[i][offset_n] / factor));
-        for j in offset_n..N {
+        let row: Vec<K> = data[offset_m].clone().into_iter().map(|x| x * (data[i][offset_n] / factor)).collect();
+        for j in offset_n..data[0].len() {
             data[i][j] -= row[j];
         }
     }
@@ -151,10 +141,8 @@ fn remove_first_entries<
 
 fn find_next_pivot<
     K: Copy + Default + std::cmp::PartialOrd + From<f32>,
-    const N: usize,
-    const M: usize,
 >(
-    data: &mut [[K; N]; M],
+    data: &mut Vec<Vec<K>>,
     offset_n: &mut usize,
     offset_m: &mut usize,
 ) {
@@ -173,10 +161,8 @@ fn remove_last_entries<
         + From<f32>
         + std::ops::Mul<Output = K>
         + std::ops::SubAssign,
-    const N: usize,
-    const M: usize,
 >(
-    data: &mut [[K; N]; M],
+    data: &mut Vec<Vec<K>>,
     offset_n: usize,
     offset_m: usize,
 ) {
@@ -184,8 +170,8 @@ fn remove_last_entries<
         if data[i][offset_n] == K::from(0.) {
             continue;
         }
-        let row = data[offset_m].map(|x| x * data[i][offset_n]);
-        for j in offset_n..N {
+        let row: Vec<K> = data[offset_m].clone().into_iter().map(|x| x * data[i][offset_n]).collect();
+        for j in offset_n..data[0].len() {
             data[i][j] -= row[j];
         }
     }

@@ -12,10 +12,9 @@ impl<
             + std::ops::Mul<Output = K>
             + std::ops::Add<Output = K>
             + MulAdd<Output = K>,
-        const N: usize,
-    > Vector<K, N>
+    > Vector<K>
 {
-    pub fn dot(&self, v: &Vector<K, N>) -> K {
+    pub fn dot(&self, v: &Vector<K>) -> K {
         let mut res = K::default();
         for i in 0..self.size() {
             res = v.data[i].mul_add(self.data[i], res);

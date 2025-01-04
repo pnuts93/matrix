@@ -13,10 +13,9 @@ pub fn angle_cos<
         + std::ops::Div<Output = K>
         + num_traits::Pow<f32, Output = K>
         + num_traits::ops::mul_add::MulAdd<Output = K>,
-    const N: usize,
 >(
-    u: &Vector<K, N>,
-    v: &Vector<K, N>,
+    u: &Vector<K>,
+    v: &Vector<K>,
 ) -> K {
     u.dot(v) / (u.dot(u) * v.dot(v)).pow(0.5)
 }
