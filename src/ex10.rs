@@ -58,9 +58,7 @@ impl<
     }
 }
 
-fn switch_rows<
-    K: Copy + Default + From<f32> + std::cmp::PartialOrd + num::Signed
->(
+fn switch_rows<K: Copy + Default + From<f32> + std::cmp::PartialOrd + num::Signed>(
     data: &mut Vec<Vec<K>>,
     offset_n: &mut usize,
     offset_m: &mut usize,
@@ -74,9 +72,7 @@ fn switch_rows<
     Ok(())
 }
 
-fn find_max_row<
-    K: Copy + Default + From<f32> + std::cmp::PartialOrd + num::Signed,
->(
+fn find_max_row<K: Copy + Default + From<f32> + std::cmp::PartialOrd + num::Signed>(
     data: &mut Vec<Vec<K>>,
     offset_n: &mut usize,
     offset_m: &mut usize,
@@ -132,16 +128,18 @@ fn remove_first_entries<
             continue;
         }
         let factor = data[offset_m][offset_n];
-        let row: Vec<K> = data[offset_m].clone().into_iter().map(|x| x * (data[i][offset_n] / factor)).collect();
+        let row: Vec<K> = data[offset_m]
+            .clone()
+            .into_iter()
+            .map(|x| x * (data[i][offset_n] / factor))
+            .collect();
         for j in offset_n..data[0].len() {
             data[i][j] -= row[j];
         }
     }
 }
 
-fn find_next_pivot<
-    K: Copy + Default + std::cmp::PartialOrd + From<f32>,
->(
+fn find_next_pivot<K: Copy + Default + std::cmp::PartialOrd + From<f32>>(
     data: &mut Vec<Vec<K>>,
     offset_n: &mut usize,
     offset_m: &mut usize,
@@ -170,7 +168,11 @@ fn remove_last_entries<
         if data[i][offset_n] == K::from(0.) {
             continue;
         }
-        let row: Vec<K> = data[offset_m].clone().into_iter().map(|x| x * data[i][offset_n]).collect();
+        let row: Vec<K> = data[offset_m]
+            .clone()
+            .into_iter()
+            .map(|x| x * data[i][offset_n])
+            .collect();
         for j in offset_n..data[0].len() {
             data[i][j] -= row[j];
         }
@@ -193,22 +195,26 @@ mod tests {
     #[test]
     fn test_row_echelon() {
         let u = Matrix::from([[1., 0., 0.], [0., 1., 0.], [0., 0., 1.]]);
-        assert!(u
-            .row_echelon()
-            .equals(&Matrix::from([[1., 0., 0.], [0., 1., 0.], [0., 0., 1.]])));
+        assert_eq!(
+            u.row_echelon(),
+            Matrix::from([[1., 0., 0.], [0., 1., 0.], [0., 0., 1.]])
+        );
         let u = Matrix::from([[1., 2.], [3., 4.]]);
-        assert!(u.row_echelon().equals(&Matrix::from([[1., 0.], [0., 1.]])));
+        assert_eq!(u.row_echelon(), Matrix::from([[1., 0.], [0., 1.]]));
         let u = Matrix::from([[1., 2.], [2., 4.]]);
-        assert!(u.row_echelon().equals(&Matrix::from([[1., 2.], [0., 0.]])));
+        assert_eq!(u.row_echelon(), Matrix::from([[1., 2.], [0., 0.]]));
         let u = Matrix::from([
             [8., 5., -2., 4., 28.],
             [4., 2.5, 20., 4., -4.],
             [8., 5., 1., 4., 17.],
         ]);
-        assert!(u.row_echelon().equals(&Matrix::from([
-            [1., 0.625, 0., 0., -12.1666667],
-            [0., 0., 1., 0., -3.6666667],
-            [0., 0., 0., 1., 29.5]
-        ])));
+        assert_eq!(
+            u.row_echelon(),
+            Matrix::from([
+                [1., 0.625, 0., 0., -12.1666667],
+                [0., 0., 1., 0., -3.6666667],
+                [0., 0., 0., 1., 29.5]
+            ])
+        );
     }
 }

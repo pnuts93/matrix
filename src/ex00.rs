@@ -4,10 +4,7 @@ impl<
         K: std::ops::Add<Output = K>
             + std::ops::Sub<Output = K>
             + std::ops::Mul<Output = K>
-            + std::cmp::PartialEq
             + From<f32>
-            + std::cmp::PartialOrd
-            + num::Signed
             + Copy
             + Default,
     > Vector<K>
@@ -44,11 +41,8 @@ impl<
         K: std::ops::Add<Output = K>
             + std::ops::Sub<Output = K>
             + std::ops::Mul<Output = K>
-            + std::cmp::PartialEq
             + Copy
             + Default
-            + num::Signed
-            + std::cmp::PartialOrd
             + From<f32>,
     > Matrix<K>
 {
@@ -97,7 +91,7 @@ mod tests {
         let v = Vector::from([5., 7.]);
         let w = u._add(&v);
         assert_eq!(w.size(), 2);
-        assert!(w.equals(&Vector::from([7., 10.])));
+        assert_eq!(w, Vector::from([7., 10.]));
     }
 
     #[test]
@@ -106,7 +100,7 @@ mod tests {
         let v = Vector::from([5., 7.]);
         let w = u._sub(&v);
         assert_eq!(w.size(), 2);
-        assert!(w.equals(&Vector::from([-3., -4.])));
+        assert_eq!(w, Vector::from([-3., -4.]));
     }
 
     #[test]
@@ -114,7 +108,7 @@ mod tests {
         let u = Vector::from([2., 3.]);
         let w = u._scl(2.);
         assert_eq!(w.size(), 2);
-        assert!(w.equals(&Vector::from([4., 6.])));
+        assert_eq!(w, Vector::from([4., 6.]));
     }
 
     #[test]
@@ -122,7 +116,7 @@ mod tests {
         let u = Matrix::from([[1., 2.], [3., 4.]]);
         let v = Matrix::from([[7., 4.], [-2., 2.]]);
         let w = u._add(&v);
-        assert!(w.equals(&Matrix::from([[8., 6.], [1., 6.]])));
+        assert_eq!(w, Matrix::from([[8., 6.], [1., 6.]]));
     }
 
     #[test]
@@ -130,13 +124,13 @@ mod tests {
         let u = Matrix::from([[1., 2.], [3., 4.]]);
         let v = Matrix::from([[7., 4.], [-2., 2.]]);
         let w = u._sub(&v);
-        assert!(w.equals(&Matrix::from([[-6.0, -2.0], [5.0, 2.0]])));
+        assert_eq!(w, Matrix::from([[-6.0, -2.0], [5.0, 2.0]]));
     }
 
     #[test]
     fn test_matrix_scl() {
         let u = Matrix::from([[1., 2.], [3., 4.]]);
         let w = u._scl(2.);
-        assert!(w.equals(&Matrix::from([[2.0, 4.0], [6.0, 8.0]])));
+        assert_eq!(w, Matrix::from([[2.0, 4.0], [6.0, 8.0]]));
     }
 }

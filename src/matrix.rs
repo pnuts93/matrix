@@ -1,4 +1,6 @@
-#[derive(Clone)]
+use crate::Equals;
+
+#[derive(Clone, Debug)]
 pub struct Matrix<K> {
     pub data: Vec<Vec<K>>,
 }
@@ -29,21 +31,12 @@ impl<K> Matrix<K> {
             .all(|(a, b)| a == b)
     }
 }
-impl<
-        K: Copy
-            + std::cmp::PartialEq
-            + std::ops::Sub<Output = K>
-            + num::Signed
-            + std::cmp::PartialOrd
-            + From<f32>,
-    > Matrix<K>
-{
-    pub fn equals(&self, v: &Matrix<K>) -> bool {
-        self.data.iter().zip(v.data.iter()).all(|(a, b)| {
-            a.iter()
-                .zip(b.iter())
-                .all(|(ax, by)| (*ax - *by).abs() < K::from(1e-6))
-        })
+impl<K: Equals> PartialEq for Matrix<K> {
+    fn eq(&self, v: &Self) -> bool {
+        self.data
+            .iter()
+            .zip(v.data.iter())
+            .all(|(a, b)| a.iter().zip(b.iter()).all(|(ax, by)| ax.equals(by)))
     }
 }
 

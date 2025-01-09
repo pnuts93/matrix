@@ -1,4 +1,6 @@
-#[derive(Clone)]
+use crate::Equals;
+
+#[derive(Clone, Debug)]
 pub struct Vector<K> {
     pub data: Vec<K>,
 }
@@ -17,6 +19,12 @@ impl<K: Clone> From<Vec<K>> for Vector<K> {
     }
 }
 
+impl<K: Equals> PartialEq for Vector<K> {
+    fn eq(&self, v: &Self) -> bool {
+        v.data.iter().zip(v.data.iter()).all(|(a, b)| a.equals(b))
+    }
+}
+
 impl<K> Vector<K> {
     pub fn size(&self) -> usize {
         self.data.len()
@@ -24,23 +32,6 @@ impl<K> Vector<K> {
 
     pub fn is_same_size(&self, v: &Vector<K>) -> bool {
         self.size() == v.size()
-    }
-}
-
-impl<
-        K: Copy
-            + From<f32>
-            + std::cmp::PartialOrd
-            + std::ops::Sub<Output = K>
-            + num::Signed
-            + std::cmp::PartialEq,
-    > Vector<K>
-{
-    pub fn equals(&self, v: &Vector<K>) -> bool {
-        self.data
-            .iter()
-            .zip(v.data.iter())
-            .all(|(a, b)| (*a - *b).abs() < K::from(1e-6))
     }
 }
 

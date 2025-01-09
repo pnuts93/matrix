@@ -1,6 +1,8 @@
+use core::f32;
+use std::fs;
+
 use matrix::{
-    ex01::linear_combination, ex02::lerp, ex05::angle_cos, ex06::cross_product, matrix::Matrix,
-    vector::Vector,
+    ex01::linear_combination, ex02::lerp, ex05::angle_cos, ex06::cross_product, ex14::projection, matrix::Matrix, vector::Vector
 };
 
 fn main() {
@@ -18,6 +20,8 @@ fn main() {
     exercise_map.push(("EX10: Row-echelon form".to_string(), ex10));
     exercise_map.push(("EX11: Determinant".to_string(), ex11));
     exercise_map.push(("EX12: Inverse".to_string(), ex12));
+    exercise_map.push(("EX13: Rank".to_string(), ex13));
+    exercise_map.push(("EX14: Projection matrix".to_string(), ex14));
 
     for (key, function) in exercise_map.into_iter() {
         println!("\n\n\n##### {:?} #####\n", key);
@@ -190,13 +194,10 @@ fn ex10() {
 fn ex11() {
     let u = Matrix::from([[1., -1.], [-1., 1.]]);
     println!("{}", u.determinant());
-    // 0.0
     let u = Matrix::from([[2., 0., 0.], [0., 2., 0.], [0., 0., 2.]]);
     println!("{}", u.determinant());
-    // 8.0
     let u = Matrix::from([[8., 5., -2.], [4., 7., 20.], [7., 6., 1.]]);
     println!("{}", u.determinant());
-    // -174.0
     let u = Matrix::from([
         [8., 5., -2., 4.],
         [4., 2.5, 20., 4.],
@@ -209,17 +210,24 @@ fn ex11() {
 fn ex12() {
     let u = Matrix::from([[1., 0., 0.], [0., 1., 0.], [0., 0., 1.]]);
     println!("{}", u.inverse());
-    // [1.0, 0.0, 0.0]
-    // [0.0, 1.0, 0.0]
-    // [0.0, 0.0, 1.0]
     let u = Matrix::from([[2., 0., 0.], [0., 2., 0.], [0., 0., 2.]]);
     println!("{}", u.inverse());
-    // [0.5, 0.0, 0.0]
-    // [0.0, 0.5, 0.0]
-    // [0.0, 0.0, 0.5]
     let u = Matrix::from([[8., 5., -2.], [4., 7., 20.], [7., 6., 1.]]);
     println!("{}", u.inverse());
-    // [0.649425287, 0.097701149, -0.655172414]
-    // [-0.781609195, -0.126436782, 0.965517241]
-    // [0.143678161, 0.074712644, -0.206896552]
+}
+
+fn ex13() {
+    let u = Matrix::from([[1., 0., 0.], [0., 1., 0.], [0., 0., 1.]]);
+    println!("{}", u.rank());
+    let u = Matrix::from([[1., 2., 0., 0.], [2., 4., 0., 0.], [-1., 2., 1., 1.]]);
+    println!("{}", u.rank());
+    let u = Matrix::from([[8., 5., -2.], [4., 7., 20.], [7., 6., 1.], [21., 18., 7.]]);
+    println!("{}", u.rank());
+}
+
+fn ex14() {
+    let m = projection(f32::consts::PI / 4., 16. / 9., 1., 50.);
+    println!("{}", m);
+    let representation = m.to_string().replace(&['[', ']'], "");
+    fs::write("proj", representation).expect("Could not write to file");
 }
