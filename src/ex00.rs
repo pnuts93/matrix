@@ -9,6 +9,19 @@ impl<
             + Default,
     > Vector<K>
 {
+    /// Adds two vectors element-wise.
+    ///
+    /// # Arguments
+    ///
+    /// * `v` - Another vector to add.
+    ///
+    /// # Returns
+    ///
+    /// A new vector that is the element-wise sum of the two vectors.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the vectors are not the same size.
     pub fn _add(&self, v: &Vector<K>) -> Self {
         if !self.is_same_size(v) {
             panic!()
@@ -19,6 +32,20 @@ impl<
         }
         res
     }
+
+    /// Subtracts one vector from another element-wise.
+    ///
+    /// # Arguments
+    ///
+    /// * `v` - Another vector to subtract.
+    ///
+    /// # Returns
+    ///
+    /// A new vector that is the element-wise difference of the two vectors.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the vectors are not the same size.
     pub fn _sub(&self, v: &Vector<K>) -> Self {
         if !self.is_same_size(v) {
             panic!()
@@ -29,6 +56,16 @@ impl<
         }
         res
     }
+
+    /// Multiplies a vector by a scalar.
+    ///
+    /// # Arguments
+    ///
+    /// * `a` - The scalar to multiply by.
+    ///
+    /// # Returns
+    ///
+    /// A new vector that is the original vector scaled by the scalar.
     pub fn _scl(&self, a: K) -> Self {
         let mut res = Vector::from(vec![K::default(); self.size()]);
         for i in 0..self.size() {
@@ -46,6 +83,19 @@ impl<
             + From<f32>,
     > Matrix<K>
 {
+    /// Adds two matrices element-wise.
+    ///
+    /// # Arguments
+    ///
+    /// * `m` - Another matrix to add.
+    ///
+    /// # Returns
+    ///
+    /// A new matrix that is the element-wise sum of the two matrices.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the matrices do not have the same shape.
     pub fn _add(&self, m: &Matrix<K>) -> Self {
         if !self.is_same_shape(m) {
             panic!()
@@ -58,6 +108,19 @@ impl<
         }
         res
     }
+    /// Subtracts one matrix from another element-wise.
+    ///
+    /// # Arguments
+    ///
+    /// * `m` - Another matrix to subtract.
+    ///
+    /// # Returns
+    ///
+    /// A new matrix that is the element-wise difference of the two matrices.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the matrices do not have the same shape.
     pub fn _sub(&self, m: &Matrix<K>) -> Self {
         if !self.is_same_shape(m) {
             panic!()
@@ -70,6 +133,15 @@ impl<
         }
         res
     }
+    /// Multiplies a matrix by a scalar.
+    ///
+    /// # Arguments
+    ///
+    /// * `a` - The scalar to multiply by.
+    ///
+    /// # Returns
+    ///
+    /// A new matrix that is the original matrix scaled by the scalar.
     pub fn _scl(&self, a: K) -> Self {
         let mut res = Matrix::from(vec![vec![K::default(); self.shape()[0]]; self.shape()[1]]);
         for i in 0..self.shape()[0] {

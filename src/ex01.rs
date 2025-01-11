@@ -1,6 +1,16 @@
 use crate::vector::Vector;
 use num_traits::MulAdd;
 
+/// Compute the linear combination of vectors.
+/// 
+/// # Arguments
+/// 
+/// * `u` - A slice of vectors.
+/// * `coefs` - A slice of coefficients.
+/// 
+/// # Returns
+/// 
+/// A new vector that is the linear combination of the input vectors.
 pub fn linear_combination<
     K: std::marker::Copy + Default + MulAdd<Output = K> + std::fmt::Display,
 >(

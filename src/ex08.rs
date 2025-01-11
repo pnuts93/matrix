@@ -1,6 +1,11 @@
 use crate::matrix::Matrix;
 
 impl<K: Copy + Default + std::ops::AddAssign> Matrix<K> {
+    /// Computes the trace of a square matrix.
+    /// 
+    /// # Returns
+    /// 
+    /// The trace of the matrix.
     pub fn trace(&self) -> K {
         let mut res = K::default();
         for i in 0..self.shape()[0] {

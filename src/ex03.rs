@@ -6,14 +6,21 @@ impl<
         K: Copy
             + Default
             + From<f32>
-            + std::cmp::PartialOrd
-            + num::Signed
             + PartialEq
             + std::ops::Mul<Output = K>
             + std::ops::Add<Output = K>
             + MulAdd<Output = K>,
     > Vector<K>
 {
+    /// Computes the dot product of two vectors.
+    /// 
+    /// # Arguments
+    /// 
+    /// * `v` - Another vector to compute the dot product with.
+    /// 
+    /// # Returns
+    /// 
+    /// The dot product of the two vectors.
     pub fn dot(&self, v: &Vector<K>) -> K {
         let mut res = K::default();
         for i in 0..self.size() {

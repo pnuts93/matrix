@@ -12,6 +12,11 @@ impl<
             + std::ops::SubAssign,
     > Matrix<K>
 {
+    /// Calculates the inverse of the matrix.
+    /// 
+    /// # Returns
+    /// 
+    /// The inverse of the matrix.
     pub fn inverse(&self) -> Matrix<K> {
         let mut data = vec![];
         let n = self.shape()[0];

@@ -3,6 +3,11 @@ use num::{complex::ComplexFloat, Complex};
 use crate::matrix::Matrix;
 
 impl<K: Copy + Default + std::ops::AddAssign + Conjugate> Matrix<K> {
+    /// Computes the conjugate transpose of a matrix.
+    /// 
+    /// # Returns
+    /// 
+    /// The conjugate transpose of the matrix.
     pub fn transpose(&self) -> Matrix<K> {
         let mut data = vec![vec![K::default(); self.shape()[1]]; self.shape()[0]];
         for i in 0..self.shape()[0] {

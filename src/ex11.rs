@@ -13,6 +13,11 @@ impl<
             + std::ops::MulAssign,
     > Matrix<K>
 {
+    /// Calculates the determinant of the matrix.
+    /// 
+    /// # Returns
+    /// 
+    /// The determinant of the matrix.
     pub fn determinant(&self) -> K {
         let mut switch_counter = 0;
         let row_echelon_form = self.row_echelon_count(&mut switch_counter);

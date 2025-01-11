@@ -12,6 +12,11 @@ impl<
             + std::ops::SubAssign,
     > Matrix<K>
 {
+    /// Calculates the rank of the matrix.
+    /// 
+    /// # Returns
+    /// 
+    /// The rank of the matrix.
     pub fn rank(&self) -> usize {
         let row_echelon_form = self.row_echelon();
         let mut rank = 0;

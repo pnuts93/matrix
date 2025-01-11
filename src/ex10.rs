@@ -12,6 +12,11 @@ impl<
             + std::ops::SubAssign,
     > Matrix<K>
 {
+    /// Converts the matrix to its reduced row echelon form.
+    ///
+    /// # Returns
+    ///
+    /// A new matrix that is the row echelon form of the original matrix.
     pub fn row_echelon(&self) -> Matrix<K> {
         let mut data = self.data.clone();
         let mut offset_n: usize = 0;
@@ -40,6 +45,15 @@ impl<
         Matrix { data }
     }
 
+    /// Converts the matrix to its row echelon form and counts the number of row switches.
+    ///
+    /// # Arguments
+    ///
+    /// * `switch_counter` - A mutable reference to a counter that tracks the number of row switches.
+    ///
+    /// # Returns
+    ///
+    /// A new matrix that is the row echelon form of the original matrix.
     pub fn row_echelon_count(&self, switch_counter: &mut usize) -> Matrix<K> {
         let mut data = self.data.clone();
         let mut offset_n: usize = 0;
@@ -58,6 +72,18 @@ impl<
     }
 }
 
+/// Switches the rows of a matrix to move the row with the largest element to the top.
+/// 
+/// # Arguments
+/// 
+/// * `data` - A mutable reference to the matrix data.
+/// * `offset_n` - A mutable reference to the column offset.
+/// * `offset_m` - A mutable reference to the row offset.
+/// * `switch_counter` - A mutable reference to the row switch counter.
+/// 
+/// # Returns
+/// 
+/// A Result containing `()` if the operation was successful, or a ZeroedColumnError if the column is all zeroes.
 fn switch_rows<K: Copy + Default + From<f32> + std::cmp::PartialOrd + num::Signed>(
     data: &mut Vec<Vec<K>>,
     offset_n: &mut usize,
@@ -72,6 +98,17 @@ fn switch_rows<K: Copy + Default + From<f32> + std::cmp::PartialOrd + num::Signe
     Ok(())
 }
 
+/// Finds the row with the largest element in a given column.
+/// 
+/// # Arguments
+/// 
+/// * `data` - A mutable reference to the matrix data.
+/// * `offset_n` - A mutable reference to the column offset.
+/// * `offset_m` - A mutable reference to the row offset.
+/// 
+/// # Returns
+/// 
+/// A Result containing the index of the row with the largest element in the column, or a ZeroedColumnError if the column is all zeroes.
 fn find_max_row<K: Copy + Default + From<f32> + std::cmp::PartialOrd + num::Signed>(
     data: &mut Vec<Vec<K>>,
     offset_n: &mut usize,
@@ -90,6 +127,13 @@ fn find_max_row<K: Copy + Default + From<f32> + std::cmp::PartialOrd + num::Sign
     Ok(max_row)
 }
 
+/// Normalizes the current pivot modifying the whole row.
+/// 
+/// # Arguments
+/// 
+/// * `data` - A mutable reference to the matrix data.
+/// * `offset_n` - The column offset.
+/// * `offset_m` - The row offset.
 fn normalize_row<
     K: Copy
         + Default
@@ -110,6 +154,13 @@ fn normalize_row<
     }
 }
 
+/// Removes the first entries in the rows below the pivot.
+/// 
+/// # Arguments
+/// 
+/// * `data` - A mutable reference to the matrix data.
+/// * `offset_n` - The column offset.
+/// * `offset_m` - The row offset.
 fn remove_first_entries<
     K: Copy
         + Default
@@ -139,6 +190,13 @@ fn remove_first_entries<
     }
 }
 
+/// Finds the next pivot in the matrix.
+/// 
+/// # Arguments
+/// 
+/// * `data` - A mutable reference to the matrix data.
+/// * `offset_n` - A mutable reference to the column offset.
+/// * `offset_m` - A mutable reference to the row offset.
 fn find_next_pivot<K: Copy + Default + std::cmp::PartialOrd + From<f32>>(
     data: &mut Vec<Vec<K>>,
     offset_n: &mut usize,
@@ -152,6 +210,13 @@ fn find_next_pivot<K: Copy + Default + std::cmp::PartialOrd + From<f32>>(
     }
 }
 
+/// Removes the last entries in the rows above the pivot.
+/// 
+/// # Arguments
+/// 
+/// * `data` - A mutable reference to the matrix data.
+/// * `offset_n` - The column offset.
+/// * `offset_m` - The row offset.
 fn remove_last_entries<
     K: Copy
         + Default
@@ -179,6 +244,7 @@ fn remove_last_entries<
     }
 }
 
+/// An error type for when all elements in a matrix column are zeroes.
 #[derive(Debug, Clone)]
 struct ZeroedColumnError;
 

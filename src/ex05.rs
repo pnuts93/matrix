@@ -1,13 +1,21 @@
 use crate::{ex04::Modulus, vector::Vector};
 
+/// Computes the cosine of the angle between two vectors.
+/// 
+/// # Arguments
+/// 
+/// * `u` - The first vector.
+/// * `v` - The second vector.
+/// 
+/// # Returns
+/// 
+/// The cosine of the angle between the two vectors.
 pub fn angle_cos<
     K: Copy
         + Default
         + Modulus
         + PartialEq
         + From<f32>
-        + std::cmp::PartialOrd
-        + num::Signed
         + std::ops::Add<Output = K>
         + std::ops::Mul<Output = K>
         + std::ops::Div<Output = K>

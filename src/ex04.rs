@@ -7,18 +7,26 @@ impl<
         K: Copy
             + Default
             + From<f32>
-            + std::cmp::PartialOrd
-            + num::Signed
             + PartialEq
             + std::ops::Mul<Output = K>
             + std::ops::Add<Output = K>
             + Modulus,
     > Vector<K>
 {
+    /// Computes the 1-norm of a vector.
+    /// 
+    /// # Returns
+    /// 
+    /// The 1-norm of the vector.
     pub fn norm_1(&self) -> f32 {
         self.data.iter().map(|x| x.modulus()).sum()
     }
 
+    /// Computes the Euclidean norm of a vector.
+    /// 
+    /// # Returns
+    /// 
+    /// The Euclidean norm of the vector.
     pub fn norm(&self) -> f32 {
         let mut res = f32::default();
         for i in 0..self.size() {
@@ -28,12 +36,22 @@ impl<
         res.pow(0.5)
     }
 
+    /// Computes the infinity norm of a vector.
+    /// 
+    /// # Returns
+    /// 
+    /// The infinity norm of the vector.
     pub fn norm_inf(&self) -> f32 {
         self.data.iter().map(|x| x.modulus()).fold(0., f32::max)
     }
 }
 
 pub trait Modulus {
+    /// Computes the modulus of a number.
+    /// 
+    /// # Returns
+    /// 
+    /// The modulus of the number.
     fn modulus(&self) -> f32;
 }
 
