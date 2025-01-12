@@ -1,16 +1,16 @@
 use crate::matrix::Matrix;
 
 /// Creates a perspective projection matrix.
-/// 
+///
 /// # Arguments
-/// 
+///
 /// * `fov` - The field of view in radians.
 /// * `ratio` - The aspect ratio of the screen.
 /// * `near` - The near clipping plane.
 /// * `far` - The far clipping plane.
-/// 
+///
 /// # Returns
-/// 
+///
 /// A new matrix representing the perspective projection.
 pub fn projection(fov: f32, ratio: f32, near: f32, far: f32) -> Matrix<f32> {
     let mut data = vec![vec![0.; 4]; 4];

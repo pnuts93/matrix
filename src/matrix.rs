@@ -110,28 +110,20 @@ impl<K: std::fmt::Debug> std::fmt::Display for Matrix<K> {
     }
 }
 
-impl<
-        K: Copy
-            + Default
-            + std::cmp::PartialEq
-            + num_traits::ops::mul_add::MulAdd<f32, K, Output = K>
-            + std::ops::Sub<Output = K>
-            + num::Signed
-            + std::cmp::PartialOrd
-            + From<f32>,
-    > num_traits::ops::mul_add::MulAdd<f32, Self> for Matrix<K>
+impl<K: Copy + Default + num_traits::ops::mul_add::MulAdd<f32, K, Output = K>>
+    num_traits::ops::mul_add::MulAdd<f32, Self> for Matrix<K>
 {
     type Output = Self;
 
     /// Multiplies each element of the Matrix by a scalar and adds another Matrix.
-    /// 
+    ///
     /// # Arguments
-    /// 
+    ///
     /// * `a` - The scalar to multiply each element by.
     /// * `b` - The Matrix to add.
-    /// 
+    ///
     /// # Returns
-    /// 
+    ///
     /// A new Matrix with the result of the operation.
     fn mul_add(self, a: f32, b: Self) -> Self::Output {
         let mut res = Matrix::from(vec![vec![K::default(); self.shape()[0]]; self.shape()[1]]);
@@ -144,26 +136,15 @@ impl<
     }
 }
 
-impl<
-        K: Copy
-            + Default
-            + num::Signed
-            + std::cmp::PartialOrd
-            + From<f32>
-            + std::cmp::PartialEq
-            + std::ops::Add<Output = K>
-            + std::ops::Sub<Output = K>
-            + std::ops::Mul<Output = K>,
-    > std::ops::Sub for Matrix<K>
-{
+impl<K: Copy + Default + std::ops::Sub<Output = K>> std::ops::Sub for Matrix<K> {
     /// Subtracts two Matrices.
-    /// 
+    ///
     /// # Arguments
-    /// 
+    ///
     /// * `rhs` - The Matrix to subtract.
-    /// 
+    ///
     /// # Returns
-    /// 
+    ///
     /// A new Matrix with the result of the operation.
     fn sub(self, rhs: Self) -> Self::Output {
         self._sub(&rhs)
@@ -172,28 +153,17 @@ impl<
     type Output = Self;
 }
 
-impl<
-        K: Copy
-            + Default
-            + num::Signed
-            + std::cmp::PartialOrd
-            + From<f32>
-            + std::cmp::PartialEq
-            + std::ops::Add<Output = K>
-            + std::ops::Sub<Output = K>
-            + std::ops::Mul<Output = K>,
-    > std::ops::Mul<K> for Matrix<K>
-{
+impl<K: Copy + Default + std::ops::Mul<F, Output = K>, F: Copy> std::ops::Mul<F> for Matrix<K> {
     /// Multiplies a Matrix by a scalar.
-    /// 
+    ///
     /// # Arguments
-    /// 
+    ///
     /// * `rhs` - The scalar to multiply by.
-    /// 
+    ///
     /// # Returns
-    /// 
+    ///
     /// A new Matrix with the result of the operation.
-    fn mul(self, rhs: K) -> Self::Output {
+    fn mul(self, rhs: F) -> Self::Output {
         self._scl(rhs)
     }
 

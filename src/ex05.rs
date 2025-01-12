@@ -1,14 +1,14 @@
 use crate::{ex04::Modulus, vector::Vector};
 
 /// Computes the cosine of the angle between two vectors.
-/// 
+///
 /// # Arguments
-/// 
+///
 /// * `u` - The first vector.
 /// * `v` - The second vector.
-/// 
+///
 /// # Returns
-/// 
+///
 /// The cosine of the angle between the two vectors.
 pub fn angle_cos<
     K: Copy

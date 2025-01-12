@@ -1,14 +1,14 @@
 use crate::vector::Vector;
 
 /// Computes the cross product of two vectors.
-/// 
+///
 /// # Arguments
-/// 
+///
 /// * `u` - The first vector.
 /// * `v` - The second vector.
-/// 
+///
 /// # Returns
-/// 
+///
 /// The cross product of the two vectors.
 pub fn cross_product<K: Copy + Default + std::ops::Mul<Output = K> + std::ops::Sub<Output = K>>(
     u: &Vector<K>,

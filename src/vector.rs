@@ -97,28 +97,20 @@ impl<K: std::fmt::Debug> std::fmt::Display for Vector<K> {
     }
 }
 
-impl<
-        K: Copy
-            + Default
-            + From<f32>
-            + std::cmp::PartialEq
-            + num_traits::ops::mul_add::MulAdd<f32, K, Output = K>
-            + std::ops::Add<Output = K>
-            + std::ops::Sub<Output = K>
-            + std::ops::Mul<Output = K>,
-    > num_traits::ops::mul_add::MulAdd<f32, Self> for Vector<K>
+impl<K: Copy + Default + num_traits::ops::mul_add::MulAdd<f32, K, Output = K>>
+    num_traits::ops::mul_add::MulAdd<f32, Self> for Vector<K>
 {
     type Output = Self;
 
     /// Multiplies each element of the Vector by a scalar and adds another Vector.
-    /// 
+    ///
     /// # Arguments
-    /// 
+    ///
     /// * `a` - The scalar to multiply each element by.
     /// * `b` - The Vector to add.
-    /// 
+    ///
     /// # Returns
-    /// 
+    ///
     /// A new Vector with the result of the operation.
     fn mul_add(self, a: f32, b: Self) -> Self::Output {
         let mut res = Vector::from(vec![K::default(); self.size()]);
@@ -129,24 +121,15 @@ impl<
     }
 }
 
-impl<
-        K: Copy
-            + Default
-            + From<f32>
-            + std::cmp::PartialEq
-            + std::ops::Add<Output = K>
-            + std::ops::Sub<Output = K>
-            + std::ops::Mul<Output = K>,
-    > std::ops::Sub for Vector<K>
-{
+impl<K: Copy + Default + std::ops::Sub<Output = K>> std::ops::Sub for Vector<K> {
     /// Subtracts two Vectors.
-    /// 
+    ///
     /// # Arguments
-    /// 
+    ///
     /// * `rhs` - The Vector to subtract.
-    /// 
+    ///
     /// # Returns
-    /// 
+    ///
     /// A new Vector with the result of the operation.
     fn sub(self, rhs: Self) -> Self::Output {
         self._sub(&rhs)
@@ -155,28 +138,17 @@ impl<
     type Output = Self;
 }
 
-impl<
-        K: Copy
-            + Default
-            + From<f32>
-            + std::cmp::PartialOrd
-            + num::Signed
-            + std::cmp::PartialEq
-            + std::ops::Add<Output = K>
-            + std::ops::Sub<Output = K>
-            + std::ops::Mul<Output = K>,
-    > std::ops::Mul<K> for Vector<K>
-{
+impl<K: Copy + Default + std::ops::Mul<F, Output = K>, F: Copy> std::ops::Mul<F> for Vector<K> {
     /// Multiplies a Vectors by a scalar.
-    /// 
+    ///
     /// # Arguments
-    /// 
+    ///
     /// * `rhs` - The scalar to multiply the vector by.
-    /// 
+    ///
     /// # Returns
-    /// 
+    ///
     /// A new Vector with the result of the operation.
-    fn mul(self, rhs: K) -> Self::Output {
+    fn mul(self, rhs: F) -> Self::Output {
         self._scl(rhs)
     }
 

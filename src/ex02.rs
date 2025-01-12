@@ -1,15 +1,15 @@
 use num_traits::MulAdd;
 
 /// Linearly interpolate between two values.
-/// 
+///
 /// # Arguments
-/// 
+///
 /// * `u` - The first value.
 /// * `v` - The second value.
 /// * `t` - The interpolation parameter.
-/// 
+///
 /// # Returns
-/// 
+///
 /// The linear interpolation between `u` and `v` at parameter `t`.
 pub fn lerp<
     V: MulAdd<f32, V, Output = V> + std::ops::Sub<Output = V> + Clone + std::ops::Mul<f32, Output = V>,

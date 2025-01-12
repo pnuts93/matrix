@@ -1,12 +1,12 @@
-use num::{complex::ComplexFloat, Complex};
+use num::complex::ComplexFloat;
 
-use crate::matrix::Matrix;
+use crate::{matrix::Matrix, Complex};
 
 impl<K: Copy + Default + std::ops::AddAssign + Conjugate> Matrix<K> {
     /// Computes the conjugate transpose of a matrix.
-    /// 
+    ///
     /// # Returns
-    /// 
+    ///
     /// The conjugate transpose of the matrix.
     pub fn transpose(&self) -> Matrix<K> {
         let mut data = vec![vec![K::default(); self.shape()[1]]; self.shape()[0]];
@@ -37,13 +37,13 @@ impl Conjugate for f64 {
 
 impl Conjugate for Complex<f32> {
     fn conjugate(&self) -> Complex<f32> {
-        Complex::new(self.re(), -self.im())
+        Complex(num::Complex::new(self.0.re(), -self.0.im()))
     }
 }
 
 impl Conjugate for Complex<f64> {
     fn conjugate(&self) -> Complex<f64> {
-        Complex::new(self.re(), -self.im())
+        Complex(num::Complex::new(self.0.re(), -self.0.im()))
     }
 }
 

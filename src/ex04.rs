@@ -1,7 +1,7 @@
-use num::{complex::ComplexFloat, Complex};
+use num::complex::ComplexFloat;
 use num_traits::Pow;
 
-use crate::vector::Vector;
+use crate::{vector::Vector, Complex};
 
 impl<
         K: Copy
@@ -14,18 +14,18 @@ impl<
     > Vector<K>
 {
     /// Computes the 1-norm of a vector.
-    /// 
+    ///
     /// # Returns
-    /// 
+    ///
     /// The 1-norm of the vector.
     pub fn norm_1(&self) -> f32 {
         self.data.iter().map(|x| x.modulus()).sum()
     }
 
     /// Computes the Euclidean norm of a vector.
-    /// 
+    ///
     /// # Returns
-    /// 
+    ///
     /// The Euclidean norm of the vector.
     pub fn norm(&self) -> f32 {
         let mut res = f32::default();
@@ -37,9 +37,9 @@ impl<
     }
 
     /// Computes the infinity norm of a vector.
-    /// 
+    ///
     /// # Returns
-    /// 
+    ///
     /// The infinity norm of the vector.
     pub fn norm_inf(&self) -> f32 {
         self.data.iter().map(|x| x.modulus()).fold(0., f32::max)
@@ -48,9 +48,9 @@ impl<
 
 pub trait Modulus {
     /// Computes the modulus of a number.
-    /// 
+    ///
     /// # Returns
-    /// 
+    ///
     /// The modulus of the number.
     fn modulus(&self) -> f32;
 }
@@ -77,13 +77,13 @@ impl Modulus for f64 {
 
 impl Modulus for Complex<f32> {
     fn modulus(&self) -> f32 {
-        (self.re().pow(2) as f32 + self.im().pow(2) as f32).pow(0.5)
+        (self.0.re().pow(2) as f32 + self.0.im().pow(2) as f32).pow(0.5)
     }
 }
 
 impl Modulus for Complex<f64> {
     fn modulus(&self) -> f32 {
-        (self.re().pow(2) as f32 + self.im().pow(2) as f32).pow(0.5)
+        (self.0.re().pow(2) as f32 + self.0.im().pow(2) as f32).pow(0.5)
     }
 }
 

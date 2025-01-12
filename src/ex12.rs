@@ -1,4 +1,4 @@
-use crate::matrix::Matrix;
+use crate::{ex04::Modulus, matrix::Matrix};
 
 impl<
         K: Copy
@@ -6,16 +6,16 @@ impl<
             + Default
             + std::cmp::PartialOrd
             + From<f32>
-            + num::Signed
+            + Modulus
             + std::ops::Div<Output = K>
             + std::ops::Mul<Output = K>
             + std::ops::SubAssign,
     > Matrix<K>
 {
     /// Calculates the inverse of the matrix.
-    /// 
+    ///
     /// # Returns
-    /// 
+    ///
     /// The inverse of the matrix.
     pub fn inverse(&self) -> Matrix<K> {
         let mut data = vec![];
@@ -31,7 +31,9 @@ impl<
                 .concat(),
             );
         }
+        println!("{:?}", data);
         let m = Matrix::from(data).row_echelon();
+        println!("{}", m);
         let mut inverse_data = vec![vec![K::default(); n]; n];
         for i in 0..n {
             inverse_data[i] = m.data[i][n..].to_vec();

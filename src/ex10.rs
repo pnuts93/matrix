@@ -1,4 +1,4 @@
-use crate::matrix::Matrix;
+use crate::{ex04::Modulus, matrix::Matrix};
 
 impl<
         K: Copy
@@ -6,7 +6,7 @@ impl<
             + Default
             + std::cmp::PartialOrd
             + From<f32>
-            + num::Signed
+            + Modulus
             + std::ops::Div<Output = K>
             + std::ops::Mul<Output = K>
             + std::ops::SubAssign,
@@ -35,11 +35,15 @@ impl<
         offset_m = self.shape()[1] - 1;
         offset_n = self.shape()[0] - 1;
         while offset_m > 0 && offset_n > 0 {
-            find_next_pivot(&mut data, &mut offset_n, &mut offset_m);
-            remove_last_entries(&mut data, offset_n, offset_m);
-            if offset_n != 0 && offset_m != 0 {
-                offset_m -= 1;
-                offset_n -= 1;
+            match find_next_pivot(&mut data, &mut offset_n, &mut offset_m) {
+                Ok(_) => {
+                    remove_last_entries(&mut data, offset_n, offset_m);
+                    if offset_n != 0 && offset_m != 0 {
+                        offset_m -= 1;
+                        offset_n -= 1;
+                    }
+                }
+                Err(_) => break,
             }
         }
         Matrix { data }
@@ -73,18 +77,18 @@ impl<
 }
 
 /// Switches the rows of a matrix to move the row with the largest element to the top.
-/// 
+///
 /// # Arguments
-/// 
+///
 /// * `data` - A mutable reference to the matrix data.
 /// * `offset_n` - A mutable reference to the column offset.
 /// * `offset_m` - A mutable reference to the row offset.
 /// * `switch_counter` - A mutable reference to the row switch counter.
-/// 
+///
 /// # Returns
-/// 
+///
 /// A Result containing `()` if the operation was successful, or a ZeroedColumnError if the column is all zeroes.
-fn switch_rows<K: Copy + Default + From<f32> + std::cmp::PartialOrd + num::Signed>(
+fn switch_rows<K: Copy + Default + From<f32> + std::cmp::PartialOrd + Modulus>(
     data: &mut Vec<Vec<K>>,
     offset_n: &mut usize,
     offset_m: &mut usize,
@@ -99,24 +103,24 @@ fn switch_rows<K: Copy + Default + From<f32> + std::cmp::PartialOrd + num::Signe
 }
 
 /// Finds the row with the largest element in a given column.
-/// 
+///
 /// # Arguments
-/// 
+///
 /// * `data` - A mutable reference to the matrix data.
 /// * `offset_n` - A mutable reference to the column offset.
 /// * `offset_m` - A mutable reference to the row offset.
-/// 
+///
 /// # Returns
-/// 
+///
 /// A Result containing the index of the row with the largest element in the column, or a ZeroedColumnError if the column is all zeroes.
-fn find_max_row<K: Copy + Default + From<f32> + std::cmp::PartialOrd + num::Signed>(
+fn find_max_row<K: Copy + Default + From<f32> + std::cmp::PartialOrd + Modulus>(
     data: &mut Vec<Vec<K>>,
     offset_n: &mut usize,
     offset_m: &mut usize,
 ) -> Result<usize, ZeroedColumnError> {
     let mut max_row = *offset_m;
     for i in *offset_m..data.len() {
-        if data[i][*offset_n].abs() > data[max_row][*offset_n].abs() {
+        if data[i][*offset_n].modulus() > data[max_row][*offset_n].modulus() {
             max_row = i;
         }
     }
@@ -128,43 +132,38 @@ fn find_max_row<K: Copy + Default + From<f32> + std::cmp::PartialOrd + num::Sign
 }
 
 /// Normalizes the current pivot modifying the whole row.
-/// 
+///
 /// # Arguments
-/// 
+///
 /// * `data` - A mutable reference to the matrix data.
 /// * `offset_n` - The column offset.
 /// * `offset_m` - The row offset.
 fn normalize_row<
-    K: Copy
-        + Default
-        + std::cmp::PartialOrd
-        + From<f32>
-        + std::ops::Div<Output = K>
-        + std::ops::Mul<Output = K>,
+    K: Copy + Default + std::cmp::PartialEq + From<f32> + std::ops::Div<Output = K>,
 >(
     data: &mut Vec<Vec<K>>,
     offset_n: usize,
     offset_m: usize,
 ) {
     if data[offset_m][offset_n] != K::from(1.) {
-        let factor = K::from(1.) / data[offset_m][offset_n];
+        let factor = data[offset_m][offset_n];
         for i in offset_n..data[0].len() {
-            data[offset_m][i] = data[offset_m][i] * factor;
+            data[offset_m][i] = data[offset_m][i] / factor;
         }
     }
 }
 
 /// Removes the first entries in the rows below the pivot.
-/// 
+///
 /// # Arguments
-/// 
+///
 /// * `data` - A mutable reference to the matrix data.
 /// * `offset_n` - The column offset.
 /// * `offset_m` - The row offset.
 fn remove_first_entries<
     K: Copy
         + Default
-        + std::cmp::PartialOrd
+        + std::cmp::PartialEq
         + From<f32>
         + std::ops::Mul<Output = K>
         + std::ops::Div<Output = K>
@@ -191,36 +190,40 @@ fn remove_first_entries<
 }
 
 /// Finds the next pivot in the matrix.
-/// 
+///
 /// # Arguments
-/// 
+///
 /// * `data` - A mutable reference to the matrix data.
 /// * `offset_n` - A mutable reference to the column offset.
 /// * `offset_m` - A mutable reference to the row offset.
-fn find_next_pivot<K: Copy + Default + std::cmp::PartialOrd + From<f32>>(
+fn find_next_pivot<K: Copy + Default + std::cmp::PartialEq + From<f32>>(
     data: &mut Vec<Vec<K>>,
     offset_n: &mut usize,
     offset_m: &mut usize,
-) {
+) -> Result<(), ZeroedMatrixError> {
     if let Some(new_offset_n) = data[*offset_m].iter().position(|x| *x == K::from(1.)) {
         *offset_n = new_offset_n;
+        Ok(())
     } else {
+        if *offset_m == 0 {
+            return Err(ZeroedMatrixError);
+        }
         *offset_m -= 1;
-        find_next_pivot(data, offset_n, offset_m);
+        find_next_pivot(data, offset_n, offset_m)
     }
 }
 
 /// Removes the last entries in the rows above the pivot.
-/// 
+///
 /// # Arguments
-/// 
+///
 /// * `data` - A mutable reference to the matrix data.
 /// * `offset_n` - The column offset.
 /// * `offset_m` - The row offset.
 fn remove_last_entries<
     K: Copy
         + Default
-        + std::cmp::PartialOrd
+        + std::cmp::PartialEq
         + From<f32>
         + std::ops::Mul<Output = K>
         + std::ops::SubAssign,
@@ -251,6 +254,16 @@ struct ZeroedColumnError;
 impl std::fmt::Display for ZeroedColumnError {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         write!(f, "All elements in matrix column are zeroes")
+    }
+}
+
+/// An error type for when all elements in a matrix are zeroes.
+#[derive(Debug, Clone)]
+struct ZeroedMatrixError;
+
+impl std::fmt::Display for ZeroedMatrixError {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        write!(f, "All elements in matrix are zeroes")
     }
 }
 

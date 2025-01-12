@@ -1,4 +1,4 @@
-use crate::matrix::Matrix;
+use crate::{ex04::Modulus, matrix::Matrix};
 
 impl<
         K: Copy
@@ -6,7 +6,8 @@ impl<
             + Default
             + std::cmp::PartialOrd
             + From<f32>
-            + num::Signed
+            + Modulus
+            + std::ops::Neg<Output = K>
             + std::ops::Div<Output = K>
             + std::ops::Mul<Output = K>
             + std::ops::SubAssign
@@ -14,9 +15,9 @@ impl<
     > Matrix<K>
 {
     /// Calculates the determinant of the matrix.
-    /// 
+    ///
     /// # Returns
-    /// 
+    ///
     /// The determinant of the matrix.
     pub fn determinant(&self) -> K {
         let mut switch_counter = 0;

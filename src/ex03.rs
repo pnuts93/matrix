@@ -13,13 +13,13 @@ impl<
     > Vector<K>
 {
     /// Computes the dot product of two vectors.
-    /// 
+    ///
     /// # Arguments
-    /// 
+    ///
     /// * `v` - Another vector to compute the dot product with.
-    /// 
+    ///
     /// # Returns
-    /// 
+    ///
     /// The dot product of the two vectors.
     pub fn dot(&self, v: &Vector<K>) -> K {
         let mut res = K::default();

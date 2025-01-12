@@ -1,14 +1,6 @@
 use crate::{matrix::Matrix, vector::Vector};
 
-impl<
-        K: std::ops::Add<Output = K>
-            + std::ops::Sub<Output = K>
-            + std::ops::Mul<Output = K>
-            + From<f32>
-            + Copy
-            + Default,
-    > Vector<K>
-{
+impl<K: std::ops::Add<Output = K> + Copy + Default> Vector<K> {
     /// Adds two vectors element-wise.
     ///
     /// # Arguments
@@ -32,7 +24,8 @@ impl<
         }
         res
     }
-
+}
+impl<K: std::ops::Sub<Output = K> + Copy + Default> Vector<K> {
     /// Subtracts one vector from another element-wise.
     ///
     /// # Arguments
@@ -56,7 +49,9 @@ impl<
         }
         res
     }
+}
 
+impl<K: Copy + Default> Vector<K> {
     /// Multiplies a vector by a scalar.
     ///
     /// # Arguments
@@ -66,7 +61,11 @@ impl<
     /// # Returns
     ///
     /// A new vector that is the original vector scaled by the scalar.
-    pub fn _scl(&self, a: K) -> Self {
+    pub fn _scl<F>(&self, a: F) -> Self
+    where
+        K: std::ops::Mul<F, Output = K>,
+        F: Copy,
+    {
         let mut res = Vector::from(vec![K::default(); self.size()]);
         for i in 0..self.size() {
             res.data[i] = self.data[i] * a;
@@ -74,15 +73,7 @@ impl<
         res
     }
 }
-impl<
-        K: std::ops::Add<Output = K>
-            + std::ops::Sub<Output = K>
-            + std::ops::Mul<Output = K>
-            + Copy
-            + Default
-            + From<f32>,
-    > Matrix<K>
-{
+impl<K: std::ops::Add<Output = K> + Copy + Default> Matrix<K> {
     /// Adds two matrices element-wise.
     ///
     /// # Arguments
@@ -108,6 +99,8 @@ impl<
         }
         res
     }
+}
+impl<K: std::ops::Sub<Output = K> + Copy + Default> Matrix<K> {
     /// Subtracts one matrix from another element-wise.
     ///
     /// # Arguments
@@ -133,6 +126,8 @@ impl<
         }
         res
     }
+}
+impl<K: Copy + Default> Matrix<K> {
     /// Multiplies a matrix by a scalar.
     ///
     /// # Arguments
@@ -142,7 +137,11 @@ impl<
     /// # Returns
     ///
     /// A new matrix that is the original matrix scaled by the scalar.
-    pub fn _scl(&self, a: K) -> Self {
+    pub fn _scl<F>(&self, a: F) -> Self
+    where
+        K: std::ops::Mul<F, Output = K>,
+        F: Copy,
+    {
         let mut res = Matrix::from(vec![vec![K::default(); self.shape()[0]]; self.shape()[1]]);
         for i in 0..self.shape()[0] {
             for j in 0..self.shape()[1] {

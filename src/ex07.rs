@@ -9,13 +9,13 @@ impl<
     > Matrix<K>
 {
     /// Multiplies a matrix by a vector.
-    /// 
+    ///
     /// # Arguments
-    /// 
+    ///
     /// * `vec` - The vector to multiply by.
-    /// 
+    ///
     /// # Returns
-    /// 
+    ///
     /// A new vector with the result of the operation.
     pub fn mul_vec(&self, vec: &Vector<K>) -> Vector<K> {
         let mut data = vec![K::default(); vec.size()];
@@ -28,13 +28,13 @@ impl<
     }
 
     /// Multiplies a matrix by another matrix.
-    /// 
+    ///
     /// # Arguments
-    /// 
+    ///
     /// * `mat` - The matrix to multiply by.
-    /// 
+    ///
     /// # Returns
-    /// 
+    ///
     /// A new matrix with the result of the operation.
     pub fn mul_mat(&self, mat: &Matrix<K>) -> Matrix<K> {
         let n = self.shape()[0];

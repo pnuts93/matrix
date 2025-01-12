@@ -2,7 +2,8 @@ use core::f32;
 use std::fs;
 
 use matrix::{
-    ex01::linear_combination, ex02::lerp, ex05::angle_cos, ex06::cross_product, ex14::projection, matrix::Matrix, vector::Vector
+    ex01::linear_combination, ex02::lerp, ex05::angle_cos, ex06::cross_product, ex14::projection,
+    matrix::Matrix, vector::Vector,
 };
 
 fn main() {
@@ -178,6 +179,8 @@ fn ex09() {
 
 fn ex10() {
     let u = Matrix::from([[1., 0., 0.], [0., 1., 0.], [0., 0., 1.]]);
+    println!("{}", u.row_echelon());
+    let u = Matrix::from([[0., 0.], [0., 0.]]);
     println!("{}", u.row_echelon());
     let u = Matrix::from([[1., 2.], [3., 4.]]);
     println!("{}", u.row_echelon());
